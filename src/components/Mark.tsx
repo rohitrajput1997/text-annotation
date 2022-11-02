@@ -32,7 +32,7 @@ const Mark: React.FC<MarkProps> = (props) => {
       {props.content}
       {props.tag && (
         <span style={{ fontSize: "0.7em", fontWeight: 500, marginLeft: 6 }}>
-          {props.tag}
+       {  String( props.tag)}
         </span>
       )}
     </mark>

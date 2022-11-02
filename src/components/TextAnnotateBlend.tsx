@@ -133,7 +133,7 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
   const { tags } = blender(value);
 
   const splits = splitWithOffsets(content, tags);
-console.log(splits)
+
   return (
     <div style={style} onMouseUp={handleMouseUp}>
 <>
