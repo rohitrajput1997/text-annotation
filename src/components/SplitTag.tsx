@@ -11,19 +11,18 @@ export interface SplitProps {
   onClick: (arg0: any) => any;
 }
 
-const SplitTag:React.FC<SplitProps> = (props: any) => {
+const SplitTag: React.FC<SplitProps> = (props: any) => {
+  if (props.mark) return <Mark {...props} />;
 
-    if (props.mark) return <Mark {...props} />;
-  
-    return (
-      <span
-        data-start={props.start}
-        data-end={props.end}
-        onClick={() => props.onClick({ start: props.start, end: props.end })}
-      >
-        {props.content}
-      </span>
-    );
-  };
+  return (
+    <span
+      data-start={props.start}
+      data-end={props.end}
+      onClick={() => props.onClick({ start: props.start, end: props.end })}
+    >
+      {props.content}
+    </span>
+  );
+};
 
-  export default SplitTag;
+export default SplitTag;

@@ -30,7 +30,7 @@ interface Blend extends Split {
 interface Meta {
   color?: string;
   index?: number;
-  tag?:string
+  tag?: string;
 }
 
 interface NonBlend {
@@ -40,6 +40,24 @@ interface NonBlend {
 
 export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
   const valA = baseTag;
+  let a1: Blend[] = [];
+  if (valA.color) {
+    let tagList: string[] = [];
+    splits?.forEach((a) => {
+      if (a.tag) {
+        tagList.push(a.tag);
+      }
+    });
+    a1.push({
+      start: valA.start,
+      end: valA.end,
+      color: valA.color,
+      // eslint-disable-next-line no-sequences
+      tag: tagList.join(", "),
+    });
+    return a1;
+  }
+
   const overlap = splits
     .map((valB) => {
       if (valA.color) {
@@ -49,24 +67,30 @@ export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
           valA.end - valB.start > 0 &&
           valB.color
         ) {
+          let tagList: string[] = [];
+          splits?.forEach((a) => {
+            if (a.tag) {
+              tagList.push(a.tag);
+            }
+          });
           return {
             start: valB.start,
             end: valA.end,
             color: blend(valA.color, valB.color),
             // eslint-disable-next-line no-sequences
-            tag:[valA.tag,valB.tag],
+            tag: tagList,
           };
         } else if (
           valA.end >= valB.start &&
           valA.end >= valB.end &&
           valB.end - valB.start > 0 &&
           valB.color
-        ) {  
+        ) {
           return {
             start: valB.start,
             end: valB.end,
             color: blend(valA.color, valB.color),
-            tag:valB.tag
+            tag: valB.tag,
           };
         } else {
           return undefined;
@@ -89,8 +113,24 @@ export const getOverlap = (splits: Array<Tag>) => {
 
   while (counter < splitLen) {
     const compTag = localTags.shift();
-   
-    compTag && result.push(...focusOverlap(compTag, localTags));
+    const c = splits.filter(
+      (a) => a.start === compTag?.start && a.end === compTag.end
+    );
+
+    counter = counter + c.length - 1;
+    compTag && c.length > 1 && result.push(...focusOverlap(compTag, c));
+    c.forEach((c) => {
+      const index = localTags.findIndex(
+        (s) =>
+          s.start === c.start &&
+          s.end === c.end &&
+          s.tag === c.tag &&
+          s.text === c.text
+      );
+      if (index !== -1) {
+        localTags.splice(index, 1);
+      }
+    });
     counter++;
   }
 
@@ -195,7 +235,7 @@ const updateIndices = (splits: Array<Tag>, blend: Array<Tag>) => {
         metaIndex.push(i.__index__);
         metaData.push({
           color: i.color,
-          tag:i.tag
+          tag: i.tag,
         });
         return tagRange;
       } else if (semiInclusive && totalInclusive) {
@@ -203,8 +243,7 @@ const updateIndices = (splits: Array<Tag>, blend: Array<Tag>) => {
         totalIncInds.push(
           splits.findIndex(
             (tag, index) =>
-              tag.start <= inclusive.start &&
-              tag.end >= inclusive.end
+              tag.start <= inclusive.start && tag.end >= inclusive.end
           )
         );
         return undefined;
@@ -349,7 +388,7 @@ export const blender = (tags: Array<Tag>) => {
     const remainder = currentTags.filter(
       (_, index) => !tagIndices.includes(index)
     );
- 
+
     return {
       tags: [...overlap, ...outTags, ...remainder],
       blendIndices: tagIndices,

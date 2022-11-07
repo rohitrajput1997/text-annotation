@@ -1,6 +1,6 @@
-import React from 'react';
-import './App.css';
-import TextAnnotateBlend from './components/TextAnnotateBlend';
+import React from "react";
+import "./App.css";
+import TextAnnotateBlend from "./components/TextAnnotateBlend";
 // import { TextAnnotateBlend } from "react-text-annotate-blend";
 
 /*
@@ -15,28 +15,29 @@ interface Tag {
   color: string;
 }
 
-const init = [
+const init: Tag[] = [
   {
-    start: 10,
-    end: 22,
-    text: "many stories",
-    tag: "tagC",
-    color: "#4b46cd",
+    start: 0,
+    end: 5,
+    text: "There",
+    tag: "tagA",
+    color: "rgb(179, 245, 66)",
   },
   {
-    start: 15,
-    end: 28,
-    text: "stories about",
+    start: 0,
+    end: 5,
+    text: "There",
     tag: "tagB",
     color: "#42f5f5",
   },
   {
-    start: 120,
-    end: 124,
-    text: "each",
+    start: 0,
+    end: 5,
+    text: "There",
     tag: "tagC",
     color: "#4b46cd",
   },
+ 
 ];
 
 const demoText =
@@ -48,7 +49,6 @@ type COLOR_TYPE = {
   tagB: string;
   tagC: string;
 };
-
 
 function App() {
   const [value, setValue] = React.useState(init);

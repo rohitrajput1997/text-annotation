@@ -90,7 +90,7 @@ export const splitWithOffsets = (
 ) => {
   let lastEnd = 0;
   const splits = [];
-  for (let offset of sortBy(offsets, (o:any) => o.start)) {
+  for (let offset of sortBy(offsets, (o: any) => o.start)) {
     const { start, end } = offset;
     if (lastEnd < start) {
       splits.push({
@@ -141,7 +141,6 @@ export const selectionIsBackwards = (selection: Selection) => {
 };
 
 export const tagTransformer = (value: any, onChange: (value: []) => any) => {
-
   if (value.length) {
     const tags = [...value];
     const newTag = tags.pop();
@@ -150,7 +149,6 @@ export const tagTransformer = (value: any, onChange: (value: []) => any) => {
     let overlap = 0;
 
     tags.forEach((val) => {
-            
       const tagRange = range(val.start, val.end);
 
       let tagOverlap = tagRange
@@ -159,12 +157,12 @@ export const tagTransformer = (value: any, onChange: (value: []) => any) => {
         })
         .filter(Boolean).length;
 
-      if (tagOverlap >= 2) {
+      if (tagOverlap >= 1000) {
         overlap += 1;
       }
     });
 
-    if (overlap < 2) {
+    if (overlap < 1000) {
       onChange(value);
     }
   } else {
