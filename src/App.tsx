@@ -17,26 +17,19 @@ interface Tag {
 
 const init: Tag[] = [
   {
-    start: 0,
-    end: 5,
-    text: "There",
-    tag: "tagA",
-    color: "rgb(179, 245, 66)",
+    "start": 0,
+    "end": 5,
+    "text": "There",
+    "tag": "tagD",
+    "color": "#005f86"
   },
   {
-    start: 0,
-    end: 5,
-    text: "There",
-    tag: "tagB",
-    color: "#42f5f5",
-  },
-  {
-    start: 0,
-    end: 5,
-    text: "There",
-    tag: "tagC",
-    color: "#4b46cd",
-  },
+    "start": 0,
+    "end": 5,
+    "text": "There",
+    "tag": "tagC",
+    "color": "#4b46cd"
+  }
  
 ];
 
@@ -62,6 +55,7 @@ function App() {
     tagA: "rgb(179, 245, 66)",
     tagB: "#42f5f5",
     tagC: "#4b46cd",
+    tagD: "#005f86",
   };
 
   return (

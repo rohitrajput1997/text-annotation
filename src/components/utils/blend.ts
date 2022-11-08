@@ -43,16 +43,22 @@ export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
   let a1: Blend[] = [];
   if (valA.color) {
     let tagList: string[] = [];
-    splits?.forEach((a) => {
-      if (a.tag) {
+    let colorList: string[] = [];
+
+    splits?.forEach((a,index) => {
+      if (a.tag&&a.color) {
         tagList.push(a.tag);
+        if(index!==0){
+          colorList.push(a.color)
+        }
+       
       }
     });
     a1.push({
       start: valA.start,
       end: valA.end,
-      color: valA.color,
-      // eslint-disable-next-line no-sequences
+      color: blend(valA.color, colorList.join(", ")),
+   
       tag: tagList.join(", "),
     });
     return a1;
@@ -68,16 +74,19 @@ export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
           valB.color
         ) {
           let tagList: string[] = [];
-          splits?.forEach((a) => {
-            if (a.tag) {
+          let colorList: string[] = [];
+          splits?.forEach((a,index) => {
+            if (a.tag&&a.color) {
               tagList.push(a.tag);
+              if(index!==0){
+                colorList.push(a.color)
+              }
             }
           });
           return {
             start: valB.start,
             end: valA.end,
-            color: blend(valA.color, valB.color),
-            // eslint-disable-next-line no-sequences
+            color: blend(valA.color, colorList.join(", ")),
             tag: tagList,
           };
         } else if (
