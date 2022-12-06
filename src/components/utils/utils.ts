@@ -90,15 +90,18 @@ export const splitWithOffsets = (
 ) => {
   let lastEnd = 0;
   const splits = [];
+  console.log('Offsets', offsets);
   for (let offset of sortBy(offsets, (o:any) => o.start)) {
     const { start, end } = offset;
     if (lastEnd < start) {
+      console.log('First if');
       splits.push({
         start: lastEnd,
         end: start,
         content: text.slice(lastEnd, start),
       });
     }
+    console.log('Second if');
     splits.push({
       ...offset,
       mark: true,
@@ -107,12 +110,16 @@ export const splitWithOffsets = (
     lastEnd = end;
   }
   if (lastEnd < text.length) {
+    console.log('Third if');
     splits.push({
       start: lastEnd,
       end: text.length,
       content: text.slice(lastEnd, text.length),
     });
   }
+
+  console.log('splits With Offsets', splits);
+  
   return splits;
 };
 
@@ -158,13 +165,17 @@ export const tagTransformer = (value: any, onChange: (value: []) => any) => {
           return newTagRange.indexOf(i) >= 0;
         })
         .filter(Boolean).length;
+        console.log('Tag Overlap', tagOverlap);
+        console.log('New Tag Range', newTagRange);
 
-      if (tagOverlap >= 2) {
-        overlap += 1;
-      }
-    });
+        
+        if (tagOverlap >= 3) {
+          overlap += 1;
+        }
+      });
 
     if (overlap < 2) {
+      console.log('OnChange Value Transform', value);
       onChange(value);
     }
   } else {

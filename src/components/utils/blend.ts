@@ -39,9 +39,10 @@ interface NonBlend {
 }
 
 export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
+  console.log(baseTag);
   const valA = baseTag;
   const overlap = splits
-    .map((valB) => {
+  .map((valB) => {
       if (valA.color) {
         if (
           valA.end >= valB.start &&
@@ -53,15 +54,15 @@ export const focusOverlap = (baseTag: Tag, splits: Array<Tag>) => {
             start: valB.start,
             end: valA.end,
             color: blend(valA.color, valB.color),
-            // eslint-disable-next-line no-sequences
-            tag:[valA.tag,valB.tag],
+            tag:[valA.tag, valB.tag]
           };
         } else if (
           valA.end >= valB.start &&
           valA.end >= valB.end &&
           valB.end - valB.start > 0 &&
           valB.color
-        ) {  
+        ) {
+          
           return {
             start: valB.start,
             end: valB.end,
@@ -93,7 +94,6 @@ export const getOverlap = (splits: Array<Tag>) => {
     compTag && result.push(...focusOverlap(compTag, localTags));
     counter++;
   }
-
   return result;
 };
 
@@ -163,6 +163,7 @@ const splitGap = (tagRange: Array<number>) => {
 const updateIndices = (splits: Array<Tag>, blend: Array<Tag>) => {
   const metaData: Array<Meta> = [];
   const metaIndex: number[] = [];
+  const tag_data: Array<Meta> = [];
 
   const blendRange = blend.flatMap((i) => range(i.start, i.end));
 
@@ -192,11 +193,13 @@ const updateIndices = (splits: Array<Tag>, blend: Array<Tag>) => {
         (semiInclusive && !totalInclusive) ||
         (blendInclusive && !totalInclusive)
       ) {
+
         metaIndex.push(i.__index__);
         metaData.push({
           color: i.color,
           tag:i.tag
         });
+       
         return tagRange;
       } else if (semiInclusive && totalInclusive) {
         const inclusive = i;
@@ -323,7 +326,6 @@ const tagFilter = (tags: NonBlend) => {
     } else {
       tagVal = splitGap(val);
     }
-
     return tagVal.map((tag) => ({
       ...tagMeta,
       start: Math.min(...tag),
@@ -334,16 +336,17 @@ const tagFilter = (tags: NonBlend) => {
 };
 
 export const blender = (tags: Array<Tag>) => {
+  console.log('Tags In Blender', tags);
+
   const currentTags = sortBy(tags, ["start"]);
 
   const overlap = getOverlap(currentTags);
-
   if (overlap.length) {
+ 
     const { outRanges, metaData, tagIndices } = updateIndices(
       currentTags,
       overlap
     );
-
     const outTags = tagFilter({ outRanges, metaData });
 
     const remainder = currentTags.filter(

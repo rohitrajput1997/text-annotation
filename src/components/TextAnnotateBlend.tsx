@@ -40,7 +40,9 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
   };
 
   const handleMouseUp = () => {
+    console.log('Props onChange', !props.onChange);
     if (!props.onChange) return;
+    console.log('Props onChange after', props.onChange);
 
     const selection = window.getSelection();
     if (selection && selection.anchorNode && selection?.focusNode) {
@@ -60,6 +62,8 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
       if (selectionIsBackwards(selection)) {
         [start, end] = [end, start];
       }
+
+      console.log('Props Value', ...props.value);
       tagTransformer(
         [
           ...props.value,
@@ -133,6 +137,8 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
   const { tags } = blender(value);
 
   const splits = splitWithOffsets(content, tags);
+
+  console.log('Content', content, 'Tags', tags);
 
   return (
     <div style={style} onMouseUp={handleMouseUp}>

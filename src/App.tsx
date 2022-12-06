@@ -69,7 +69,7 @@ function App() {
       <div>
         <TextAnnotateBlend
           style={{
-            fontSize: "1.2rem",
+            fontSize: "0.8rem",
           }}
           content={demoText}
           onChange={handleChange}
