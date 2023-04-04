@@ -15,47 +15,74 @@ interface Tag {
   color: string;
 }
 
-const init: Tag[] = [
+const init: Tag[] =[
   {
+    "text": "Reserve Bank of India Governor Shaktikanta Das has termed cryptocurrencies a ‘clear danger’, adding that anything that derives value based on make believe is ‘just speculation under a sophisticated name’.",
+    "color": "#FF33FF",
+    "end": 204,
     "start": 0,
-    "end": 5,
-    "text": "There",
-    "tag": "tagD",
-    "color": "#005f86"
+    "tag": "Book",
+ 
+
+ 
+
   },
   {
+    "text": "on make believe is ‘just speculation under a sophisticated name’.",
+    "color": "#E6B333",
+    "end": 204,
+    "start": 139,
+    "tag": "Pen",
+
+ 
+ 
+  
+  },
+  {
+    "text": "Reserve Bank of India Governor Shaktikanta Das has termed cryptocurrencies a ‘clear danger’, adding that anything that derives value based",
+    "color": "#FFFF99",
+    "end": 138,
     "start": 0,
-    "end": 5,
-    "text": "There",
-    "tag": "tagC",
-    "color": "#4b46cd"
-  }
+    "tag": "Notebook",
+  
+  },
+  {
+    "text": "on make believe is ‘just speculation under",
+    "color": "#00B3E6",
+    "end": 181,
+    "start": 139,
+    "tag": "Schoolbag",
+  
+  },
  
 ];
 
 const demoText =
-  "There are many stories about the origins of cyclo-cross. One is that European road racers in the early 1900s would race each other to the next town over from them and that they were allowed to cut through farmers' fields or over fences, or take any other shortcuts, in order to make it to the next town first. This was sometimes called steeple chase as the only visible landmark in the next town was often the steeple.";
+  "Reserve Bank of India Governor Shaktikanta Das has termed cryptocurrencies a ‘clear danger’, adding that anything that derives value based on make believe is ‘just speculation under a sophisticated name’.";
 
 type COLOR_TYPE = {
   [key: string]: string;
-  tagA: string;
-  tagB: string;
-  tagC: string;
+  Pen: string;
+  Notebook: string;
+  Schoolbag: string;
+  Pencil:string;
 };
 
 function App() {
   const [value, setValue] = React.useState(init);
-  const [tag, setTag] = React.useState("tagA");
+  const [tag, setTag] = React.useState("");
 
   const handleChange = (value: Tag[]) => {
+    console.log(value)
     setValue(value);
   };
 
   const COLORS: COLOR_TYPE = {
-    tagA: "rgb(179, 245, 66)",
-    tagB: "#42f5f5",
-    tagC: "#4b46cd",
-    tagD: "#005f86",
+    Book:'#FF33FF',
+    Pen: "#E6B333",
+    Notebook: "#FFFF99",
+    Schoolbag: "#00B3E6",
+    Pencil: "#3366E6",
   };
 
   return (
