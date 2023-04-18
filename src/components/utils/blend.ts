@@ -333,11 +333,17 @@ export const blender = (tags: Array<Tag>) => {
   currentTags.forEach((s) => {
     const index = a1.findIndex((a) => a.start === s.start && a.end === s.end);
     if (index !== -1) {
-      a1[index].tag = `${a1[index].tag}, ${s.tag}`;
+      a1[index].tag = `${a1[index].tag}`;
       a1[index].color = blend(a1[index].color || "", s.color || "");
+      a1.push({
+        ...s,
+        start: a1[index].end,
+        end: a1[index].end,
+      })
     } else {
       a1.push({ ...s });
     }
+
   });
   let arrDatta: Tag[] = [];
   a1.forEach((e) => {
@@ -352,16 +358,16 @@ export const blender = (tags: Array<Tag>) => {
   );
 
   if (overlap.length) {
-    const { outRanges, metaData, tagIndices } = updateIndices(
+    const { tagIndices } = updateIndices(
       currentTags,
       overlap
     );
 
-    const outTags = tagFilter({ outRanges, metaData });
+    // const outTags = tagFilter({ outRanges, metaData });
 
-    const remainder = currentTags.filter(
-      (_, index) => !tagIndices.includes(index)
-    );
+    // const remainder = currentTags.filter(
+    //   (_, index) => !tagIndices.includes(index)
+    // );
 
     tags.forEach((tag) => delete tag["__index__"]);
 
@@ -381,7 +387,7 @@ const finalArrCreate = (currentTags: Tag, arr: Tag[]) => {
   let finalArr: Tag[] = [];
   let count = 0;
   for (let i = 0; i < arr.length; i++) {
-    if (lastObject.start === arr[i].start && lastObject.end != arr[i].end) {
+    if (lastObject.start === arr[i].start && lastObject.end !== arr[i].end) {
       count = count + 1;
       finalArr.push({
         start: lastObject.start,
@@ -431,10 +437,19 @@ const finalArrCreate = (currentTags: Tag, arr: Tag[]) => {
         end: lastObject.end,
         tag:
           lastObject.end === arr[i].end
-            ? `${arr[i].tag}, ${lastObject.tag}`
+            ? `${arr[i].tag}`
             : lastObject.tag,
         color: blend(lastObject.color || "", arr[i].color || ""),
       });
+      if (lastObject.end === arr[i].end) {
+        finalArr.push({
+          start: lastObject.end,
+          end: lastObject.end,
+          tag: `${lastObject.tag}`,
+          color: lastObject.color || "",
+        });
+      }
+
       if (lastObject.end !== arr[i].end) {
         finalArr.push({
           start: lastObject.end,
@@ -478,9 +493,16 @@ const finalArrCreate = (currentTags: Tag, arr: Tag[]) => {
       finalArr[i] = {
         start: arr[i].start,
         end: arr[i].end,
-        tag: `${arr[i].tag}, ${lastObject.tag}`,
+        tag: `${arr[i].tag}`,
         color: blend(lastObject.color || "", arr[i].color || ""),
       };
+      finalArr.push({
+        start: arr[i].end,
+        end: arr[i].end,
+        tag: `${lastObject.tag}`,
+        color: lastObject.color,
+      })
+
     } else {
       finalArr.push(arr[i]);
     }
