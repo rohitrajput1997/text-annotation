@@ -1,21 +1,24 @@
-import React from "react";
-import { luminTest } from "./utils/utils";
+/** @format */
+
+import React from "react"
+import { luminTest } from "./utils/utils"
 
 export interface MarkProps {
-  key: string;
-  content: string;
-  start: number;
-  end: number;
-  tag: string;
-  color?: string;
-  onClick: (arg0: any) => any;
+  key: string
+  content: string
+  start: number
+  end: number
+  tag: string
+  color?: string
+  onClick: (arg0: any) => any
+  id?: number
 }
 
 //TODO, props setting for tag value
 //remove rad on blend
 
 const Mark: React.FC<MarkProps> = (props) => {
-  const lumin = props.color ? luminTest(props.color) : false;
+  const lumin = props.color ? luminTest(props.color) : false
 
   return (
     <mark
@@ -31,18 +34,22 @@ const Mark: React.FC<MarkProps> = (props) => {
     >
       {props.content}
       {props.tag && (
-        <span style={{
-          fontWeight: 'bold', marginLeft: 6, fontSize: '10px',
-          background: 'white',
-          color: 'black',
-          padding: '1px 4px',
-          borderRadius: '10px'
-        }}>
+        <span
+          style={{
+            fontWeight: "bold",
+            marginLeft: 6,
+            fontSize: "10px",
+            background: "white",
+            color: "black",
+            padding: "1px 4px",
+            borderRadius: "10px",
+          }}
+        >
           {String(props.tag)}
         </span>
       )}
     </mark>
-  );
-};
+  )
+}
 
-export default Mark;
+export default Mark

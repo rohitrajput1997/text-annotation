@@ -1,4 +1,7 @@
+/** @format */
+
 export type Span = {
-  start: number;
-  end: number;
-};
+  start: number
+  end: number
+  id: number
+}

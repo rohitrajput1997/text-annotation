@@ -1,105 +1,114 @@
-import sortBy from "lodash.sortby";
-import React from "react";
-import SplitTag from "./SplitTag";
-import { blender } from "./utils/blend";
-import {
-  selectionIsBackwards, selectionIsEmpty, splitWithOffsets,
-  tagTransformer
-} from "./utils/utils";
+/** @format */
 
+import sortBy from "lodash.sortby"
+import React from "react"
+import SplitTag from "./SplitTag"
+import { blender } from "./utils/blend"
+import {
+  selectionIsBackwards,
+  selectionIsEmpty,
+  splitWithOffsets,
+  tagTransformer,
+} from "./utils/utils"
 
 interface Split {
-  start: any;
-  end: any;
+  start: any
+  end: any
 }
 
 interface TextSpan extends Span {
-  text: string;
+  text: string
 }
 
 type Span = {
-  start: number;
-  end: number;
-};
-
+  start: number
+  end: number
+  id: number
+}
 
 type TextBaseProps<T> = {
-  content: string;
-  value: T[];
-  onChange: (value: T[]) => any;
-  getSpan?: (span: TextSpan) => T;
-  style?: React.CSSProperties;
-};
+  content: string
+  value: T[]
+  onChange: (value: T[]) => any
+  getSpan?: (span: TextSpan) => T
+  style?: React.CSSProperties
+}
 
-type TextAnnotateBlendProps<T> = TextBaseProps<T>;
+type TextAnnotateBlendProps<T> = TextBaseProps<T>
 
-const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => {
+const TextAnnotateBlend = <T extends Span>(
+  props: TextAnnotateBlendProps<T>
+) => {
   const getSpan = (span: TextSpan): T => {
-    if (props.getSpan) return props.getSpan(span) as T;
-    return { start: span.start, end: span.end } as T;
-  };
+    if (props.getSpan) return props.getSpan(span) as T
+    return { start: span.start, end: span.end, id: span.id } as T
+  }
 
   const handleMouseUp = () => {
-    if (!props.onChange) return;
+    if (!props.onChange) return
 
-    const selection = window.getSelection();
+    const selection = window.getSelection()
     if (selection && selection.anchorNode && selection?.focusNode) {
-      if (selectionIsEmpty(selection)) return;
+      if (selectionIsEmpty(selection)) return
 
-      const startBase = selection.anchorNode.parentElement?.getAttribute(
-        "data-start"
-      );
-      const endBase = selection.focusNode.parentElement?.getAttribute(
-        "data-start"
-      );
-      if (startBase == null || endBase == null) return;
+      const startBase =
+        selection.anchorNode.parentElement?.getAttribute("data-start")
+      const endBase =
+        selection.focusNode.parentElement?.getAttribute("data-start")
+      if (startBase == null || endBase == null) return
 
-      let start = parseInt(String(startBase), 10) + selection.anchorOffset;
-      let end = parseInt(String(endBase), 10) + selection.focusOffset;
-
+      let start = parseInt(String(startBase), 10) + selection.anchorOffset
+      let end = parseInt(String(endBase), 10) + selection.focusOffset
+      const getRandomId = () => parseInt(Math.random().toString().split(".")[1])
       if (selectionIsBackwards(selection)) {
-        [start, end] = [end, start];
+        ;[start, end] = [end, start]
       }
       tagTransformer(
         [
           ...props.value,
-          getSpan({ start, end, text: content.slice(start, end) }),
+          getSpan({
+            start,
+            end,
+            text: content.slice(start, end),
+            id: getRandomId(),
+          }),
         ],
         props.onChange
-      );
+      )
 
-      window.getSelection()?.empty();
+      window.getSelection()?.empty()
     }
-  };
+  }
 
   const handleSplitClick = ({ start, end }: Split) => {
-    const selection = window.getSelection();
+    const selection = window.getSelection()
 
-    let focusOffset = 0;
-    let anchorOffset = 0;
+    let focusOffset = 0
+    let anchorOffset = 0
     if (selection) {
-      focusOffset = selection.focusOffset;
-      anchorOffset = selection.anchorOffset;
+      focusOffset = selection.focusOffset
+      anchorOffset = selection.anchorOffset
     }
     if (focusOffset - anchorOffset !== 0) {
-      return;
+      return
     }
 
-    const { blendIndices } = blender(value);
+    const { blendIndices } = blender(value)
 
-    const currentTags = sortBy(props.value, ["start"]);
+    const currentTags = sortBy(props.value, ["start"])
 
     const frontOverlapIndex = currentTags.findIndex(
-      (tag:any, index:any) => tag.start === start && blendIndices.includes(index)
-    );
+      (tag: any, index: any) =>
+        tag.start === start && blendIndices.includes(index)
+    )
 
     const rearOverlapIndex = currentTags.findIndex(
-      (tag:any, index:any) => tag.end === end && blendIndices.includes(index)
-    );
+      (tag: any, index: any) => tag.end === end && blendIndices.includes(index)
+    )
 
     const splitIndex = currentTags.findIndex(
-      (s:any) => s.start === start && s.end === end
-    );
+      (s: any) => s.start === start && s.end === end
+    )
 
     if (splitIndex >= 0) {
       tagTransformer(
@@ -108,7 +117,7 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
           ...currentTags.slice(splitIndex + 1),
         ],
         props.onChange
-      );
+      )
     } else if (frontOverlapIndex >= 0) {
       tagTransformer(
         [
@@ -116,7 +125,7 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
           ...currentTags.slice(frontOverlapIndex + 1),
         ],
         props.onChange
-      );
+      )
     } else if (rearOverlapIndex >= 0) {
       tagTransformer(
         [
@@ -124,31 +133,48 @@ const TextAnnotateBlend = <T extends Span>(props: TextAnnotateBlendProps<T>) => 
           ...currentTags.slice(rearOverlapIndex + 1),
         ],
         props.onChange
-      );
+      )
     }
-  };
+  }
 
-  const { content, value, style } = props;
+  const { content, value, style } = props
 
-  const { tags } = blender(value);
+  const { tags } = blender(value)
+  console.log(tags, "ad")
+  const splits = splitWithOffsets(content, tags)
+  console.log(splits)
 
-  const splits = splitWithOffsets(content, tags);
-
+  let arr = [
+    {
+      start: 0,
+      end: 12,
+      text: "Reserve Bank",
+      id: 48171919406339710,
+      tag: "Pen",
+      color: "#E6B333",
+    },
+    {
+      start: 0,
+      end: 21,
+      text: "Reserve Bank of India",
+      id: 9140297004015156,
+      tag: "Pen",
+      color: "#E6B333",
+    },
+  ]
   return (
     <div style={style} onMouseUp={handleMouseUp}>
-<>
-
-      {splits.map((split) => (
-        <SplitTag
-          key={`${split.start}-${split.end}`}
-          {...split}
-          onClick={handleSplitClick}
-        />
-      ))}
-          
-            </>
+      <>
+        {splits.map((split) => (
+          <SplitTag
+            key={`${split.start}-${split.end}`}
+            {...split}
+            onClick={handleSplitClick}
+          />
+        ))}
+      </>
     </div>
-  );
-};
+  )
+}
 
-export default TextAnnotateBlend;
+export default TextAnnotateBlend
